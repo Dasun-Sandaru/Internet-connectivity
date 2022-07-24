@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:internet_connectivity/screens/home_screen.dart';
+import 'package:internet_connectivity/screens/secode_Screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const SecondScreen(),
     );
   }
 }
