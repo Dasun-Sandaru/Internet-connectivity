@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
@@ -9,21 +11,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: implement initState 
     super.initState();
 
     // call checkConnetivity method
-    checkConnetivity();
+    //checkConnetivity();
+
+    // call check realtime connectivity method
+    checkRealtimeConnectivity();
   }
 
   String status = 'Waiting...';
   Connectivity _connectivity = Connectivity();
-
-  
 
   // methods
 
@@ -33,11 +34,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (connectionResult == ConnectivityResult.mobile) {
       status = 'Mobile Data';
+      print('Mobile Data');
     } else if (connectionResult == ConnectivityResult.wifi) {
       status = 'Wifi';
+      print('Wifi');
     } else {
       status = 'Not Connected';
+      print('Not Connected');
     }
+
+    setState(() {
+      //
+    });
+  }
+
+  // check real time internet connectivity
+  void checkRealtimeConnectivity() {
+    _connectivity.onConnectivityChanged.listen((event) {
+      if (event == ConnectivityResult.mobile) {
+        status = 'Mobile Data';
+        print('Mobile Data');
+        setState(() {
+          
+        });
+      } else if (event == ConnectivityResult.wifi) {
+        status = 'Wifi';
+        print('Wifi');
+        setState(() {
+          
+        });
+      } else {
+        status = 'Not Connected';
+        print('Not Coonected');
+        setState(() {
+          
+        });
+      }
+    });
 
     setState(() {
       //
@@ -63,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // check internet connectivity
-          checkConnetivity();
+          //checkConnetivity();
         },
         tooltip: "Increment",
         child: const Icon(Icons.question_mark),
