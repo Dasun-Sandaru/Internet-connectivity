@@ -1,6 +1,5 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,7 +10,39 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // call checkConnetivity method
+    checkConnetivity();
+  }
+
   String status = 'Waiting...';
+  Connectivity _connectivity = Connectivity();
+
+  
+
+  // methods
+
+  // check internet connetivity
+  Future<void> checkConnetivity() async {
+    var connectionResult = await _connectivity.checkConnectivity();
+
+    if (connectionResult == ConnectivityResult.mobile) {
+      status = 'Mobile Data';
+    } else if (connectionResult == ConnectivityResult.wifi) {
+      status = 'Wifi';
+    } else {
+      status = 'Not Connected';
+    }
+
+    setState(() {
+      //
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
           'Internet Connectivity',
         ),
       ),
-
       body: Center(
         child: Text(
           status,
@@ -30,10 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           // check internet connectivity
+          checkConnetivity();
         },
         tooltip: "Increment",
         child: const Icon(Icons.question_mark),
