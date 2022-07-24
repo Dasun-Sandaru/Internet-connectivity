@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String status = 'Waiting...';
   Connectivity _connectivity = Connectivity();
+  late StreamSubscription _streamSubscription;
 
   // methods
 
@@ -50,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // check real time internet connectivity
   void checkRealtimeConnectivity() {
-    _connectivity.onConnectivityChanged.listen((event) {
+    _streamSubscription = _connectivity.onConnectivityChanged.listen((event) {
       if (event == ConnectivityResult.mobile) {
         status = 'Mobile Data';
         print('Mobile Data');
@@ -75,6 +77,17 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       //
     });
+  }
+
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    // close stream Subscription
+    _streamSubscription.cancel();
+    super.dispose();
+
   }
 
   @override
