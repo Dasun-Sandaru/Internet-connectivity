@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   # check internet coonectivity
   connectivity_plus: ^2.3.6
+  # check active internet connection
+  internet_connection_checker: ^0.0.1+4
+  # show over layer toast
+  overlay_support: ^2.0.1
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -21,12 +22,31 @@ class _HomeScreenState extends State<HomeScreen> {
     //checkConnetivity();
 
     // call check realtime connectivity method
-    checkRealtimeConnectivity();
+    //checkRealtimeConnectivity();
+
+    // call ckeck internet active
+    _streamSubscriptionInternetActivite = InternetConnectionChecker().onStatusChange.listen((event) {
+      final activeInternet = event == InternetConnectionStatus.connected;
+
+      setState(() {
+        this.activeInternet = activeInternet;
+        text = activeInternet ? 'Online' : 'Offline';
+      });
+    });
   }
 
   String status = 'Waiting...';
-  Connectivity _connectivity = Connectivity();
-  late StreamSubscription _streamSubscription;
+  String text = 'On';
+  bool activeInternet = false;
+
+  TextEditingController _internetActive = TextEditingController();
+
+  final Connectivity _connectivity = Connectivity();
+  // internet connectivity
+  late StreamSubscription _streamSubscriptionInvernetConnectivity;
+  // internet avative
+  late StreamSubscription _streamSubscriptionInternetActivite;
+
 
   // methods
 
@@ -52,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // check real time internet connectivity
   void checkRealtimeConnectivity() {
-    _streamSubscription = _connectivity.onConnectivityChanged.listen((event) {
+    _streamSubscriptionInvernetConnectivity = _connectivity.onConnectivityChanged.listen((event) {
       if (event == ConnectivityResult.mobile) {
         status = 'Mobile Data';
         print('Mobile Data');
@@ -79,40 +99,87 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // check active internet connection
+  // Future<void> checkActiveConnection() async {
+  //   activeInternet = await InternetConnectionChecker().hasConnection;
+
+
+    
+  //   // final toastColor = activeInternet ? Colors.green[300]: Colors.red[400];
+
+  //   // // show over layer toast
+  //   // showSimpleNotification(
+  //   //   Text(
+  //   //     '$text',
+  //   //     style: const TextStyle(
+  //   //       color: Colors.white,
+  //   //       fontSize: 20,
+  //   //     ),
+  //   //   ),
+  //   //   background: toastColor,
+  //   // );
+
+  //   setState(() {
+  //     text = activeInternet ? 'Online' : 'Offline';
+  //   });
+
+  // }
+
 
   @override
   void dispose() {
     // TODO: implement dispose
 
     // close stream Subscription
-    _streamSubscription.cancel();
+    _streamSubscriptionInvernetConnectivity.cancel();
+    _streamSubscriptionInternetActivite.cancel();
     super.dispose();
+
+    
 
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Internet Connectivity',
-        ),
-      ),
-      body: Center(
-        child: Text(
-          status,
-          style: const TextStyle(
-            fontSize: 20.0,
+    return OverlaySupport(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Internet Connectivity',
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // check internet connectivity
-          //checkConnetivity();
-        },
-        tooltip: "Increment",
-        child: const Icon(Icons.question_mark),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // internet sourse ?
+              Text(
+                status,
+                style: const TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+              // internet activite ?
+              Text(
+                'Yor are $text',
+                style: const TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // check internet connectivity
+            //checkConnetivity();
+    
+            // check active internet connection
+            //checkActiveConnection();
+          },
+          tooltip: "Increment",
+          child: const Icon(Icons.question_mark),
+        ),
       ),
     );
   }
